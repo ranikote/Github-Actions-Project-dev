@@ -7,7 +7,7 @@ jobs:
 
   build:
     name: Java Maven Build
-    runs-on: [label-1]
+    runs-on: [label-2]
 
     steps:
       - name: Checkout code
@@ -25,7 +25,7 @@ jobs:
 
   trivy-fs-scan:
     name: Trivy FS Scan
-    runs-on: [label-1]
+    runs-on: [label-2]
 
     steps:
       - name: Checkout code
