@@ -67,3 +67,15 @@ jobs:
 
       - name: List Docker images
         run: docker images
+
+     
+      - name: Login to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Tag Docker image
+        run: |
+          docker tag my-java-app:latest ghcr.io/${{ github.repository_owner }}/my-java-app:latest
+
+      - name: Push Docker image to GHCR
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/my-java-app:latest
