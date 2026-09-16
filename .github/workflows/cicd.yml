@@ -1,9 +1,8 @@
 name: Java Maven and Trivy Scan
 
-
 on:
   workflow_dispatch:
-   
+    
 
 jobs:
 
@@ -27,7 +26,6 @@ jobs:
       - name: Compile Maven project
         run: mvn compile
 
-
   trivy-fs-scan:
     name: Trivy FS Scan
     runs-on: [label-1]
@@ -42,7 +40,6 @@ jobs:
       - name: Trivy Filesystem Scan
         run: trivy fs --format table -o fs-report.json .
 
-
   Sonarqube-scan:
     name: SonarQube Scan
     runs-on: [label-1]
@@ -56,5 +53,3 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
-
-          
