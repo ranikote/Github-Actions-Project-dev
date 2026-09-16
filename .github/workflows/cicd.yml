@@ -1,3 +1,4 @@
+```yaml
 name: Java Maven and Trivy Scan
 
 on:
@@ -33,12 +34,22 @@ jobs:
 
       - name: Check Trivy version
         run: trivy --version
-        
+
+      - name: Trivy Filesystem Scan
+        run: trivy fs --format table -o fs-report.json .
+
+
   Sonarqube-scan:
-        
+    name: SonarQube Scan
+    runs-on: [label-1]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
-
+```
