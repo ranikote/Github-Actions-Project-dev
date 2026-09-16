@@ -2,15 +2,7 @@ name: Java Maven and Trivy Scan
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: "Select environment"
-        required: true
-        type: choice
-        options:
-          - dev
-          - test
-          - prod
+    
 
 jobs:
 
@@ -22,8 +14,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Show selected environment
-        run: echo "Environment: ${{ inputs.environment }}"
 
       - name: Check Java version
         run: java -version
