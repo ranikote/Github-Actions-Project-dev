@@ -1,84 +1,114 @@
 name: Java Maven and Trivy Scan
 
 on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
   
 permissions:
   contents: read
   packages: write
+  security-events: write
 
 jobs:
-
-  build:
-    name: Java Maven Build
+  codeql:
+    name: CodeQL Analysis
     runs-on: [label-1]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Check Java version
-        run: java -version
-
-      - name: Check Maven version
-        run: mvn -version
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: java
 
       - name: Build Maven project
         run: mvn clean package -DskipTests
 
-      - name: Check generated JAR
-        run: |
-          echo "JAR files:"
-          find target -name "*.jar" -type f
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
 
-
-  trivy-fs-scan:
-    name: Trivy FS Scan
+  dependency-review:
     runs-on: [label-1]
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
 
-      - name: Check Trivy version
-        run: trivy --version
+  # build:
+  #   name: Java Maven Build
+  #   runs-on: [label-1]
 
-      - name: Trivy Filesystem Scan
-        run: trivy fs --format table -o fs-report.json .
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v6
+
+  #     - name: Check Java version
+  #       run: java -version
+
+  #     - name: Check Maven version
+  #       run: mvn -version
+
+  #     - name: Build Maven project
+  #       run: mvn clean package -DskipTests
+
+  #     - name: Check generated JAR
+  #       run: |
+  #         echo "JAR files:"
+  #         find target -name "*.jar" -type f
 
 
-  docker-build:
-    name: Build Docker Image
-    runs-on: [label-1]
+  # trivy-fs-scan:
+  #   name: Trivy FS Scan
+  #   runs-on: [label-1]
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v6
 
-      - name: Build Maven project
-        run: mvn clean package -DskipTests
+  #     - name: Check Trivy version
+  #       run: trivy --version
 
-      - name: Check generated JAR
-        run: |
-          echo "JAR files:"
-          find target -name "*.jar" -type f
+  #     - name: Trivy Filesystem Scan
+  #       run: trivy fs --format table -o fs-report.json .
 
-      - name: Check Docker version
-        run: docker --version
 
-      - name: Build Docker image
-        run: docker build -t my-java-app:latest .
+  # docker-build:
+  #   name: Build Docker Image
+  #   runs-on: [label-1]
 
-      - name: List Docker images
-        run: docker images
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v6
+
+  #     - name: Build Maven project
+  #       run: mvn clean package -DskipTests
+
+  #     - name: Check generated JAR
+  #       run: |
+  #         echo "JAR files:"
+  #         find target -name "*.jar" -type f
+
+  #     - name: Check Docker version
+  #       run: docker --version
+
+  #     - name: Build Docker image
+  #       run: docker build -t my-java-app:latest .
+
+  #     - name: List Docker images
+  #       run: docker images
      
-      - name: Login to GitHub Container Registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+  #     - name: Login to GitHub Container Registry
+  #       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
-      - name: Tag Docker image
-        run: |
-          docker tag my-java-app:latest ghcr.io/${{ github.repository_owner }}/my-java-app:latest
+  #     - name: Tag Docker image
+  #       run: |
+  #         docker tag my-java-app:latest ghcr.io/${{ github.repository_owner }}/my-java-app:latest
 
-      - name: Push Docker image to GHCR
-        run: |
-          docker push ghcr.io/${{ github.repository_owner }}/my-java-app:latest
+  #     - name: Push Docker image to GHCR
+  #       run: |
+  #         docker push ghcr.io/${{ github.repository_owner }}/my-java-app:latest
