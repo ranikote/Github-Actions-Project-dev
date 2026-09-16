@@ -1,11 +1,10 @@
+
 name: Java Maven and Trivy Scan
 
 on:
   workflow_dispatch:
-    
 
 jobs:
-
   build:
     name: Java Maven Build
     runs-on: [label-1]
@@ -13,7 +12,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-
 
       - name: Check Java version
         run: java -version
@@ -38,7 +36,7 @@ jobs:
       - name: Trivy Filesystem Scan
         run: trivy fs --format table -o fs-report.json .
 
-  Sonarqube-scan:
+  sonarqube-scan:
     name: SonarQube Scan
     runs-on: [label-1]
 
