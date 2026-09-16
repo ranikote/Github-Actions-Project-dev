@@ -35,17 +35,35 @@ jobs:
       - name: Trivy Filesystem Scan
         run: trivy fs --format table -o fs-report.json .
 
-  sonarqube-scan:
-    name: SonarQube Scan
+  # sonarqube-scan:
+  #   name: SonarQube Scan
+  #   runs-on: [label-1]
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v6
+
+  #     - name: SonarQube Scan
+  #       uses: SonarSource/sonarqube-scan-action@v6
+  #       env:
+         
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #         SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
+ 
+
+  docker-build:
+    name: Build Docker Image
     runs-on: [label-1]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v6
-        env:
-         
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
+      - name: Check Docker version
+        run: docker --version
+
+      - name: Build Docker image
+        run: docker build -t my-java-app:latest .
+
+      - name: List Docker images
+        run: docker images
