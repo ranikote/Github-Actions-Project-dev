@@ -33,6 +33,12 @@ jobs:
 
       - name: Check Trivy version
         run: trivy --version
+        
+  Sonarqube-scan:
+        
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
 
-      - name: Trivy FS Scan
-        run: trivy fs --format table -o fs-report.json .
