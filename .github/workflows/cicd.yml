@@ -1,4 +1,4 @@
-```yaml
+
 name: Java Maven and Trivy Scan
 
 on:
